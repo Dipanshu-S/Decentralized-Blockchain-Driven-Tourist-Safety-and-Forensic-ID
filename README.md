@@ -40,7 +40,7 @@ India's tourism sector (contributing $39.9B annually) faces critical safety chal
 
 This project integrates **Multi-Camera People Tracking (MCPT)**, **Blockchain-based Digital Identity**, **Real-time Anomaly Detection**, and **IoT Emergency Response** into a unified platform achieving:
 
-- ✅ **71.94% HOTA** (world-leading multi-camera tracking)
+- ✅ **67.21% HOTA** (world-leading multi-camera tracking)
 - ✅ **95% detection accuracy** in crowded scenes
 - ✅ **80% faster emergency response** (30 min → <30 sec)
 - ✅ **15-30 min advance warning** for crowd surges
@@ -629,7 +629,7 @@ GET    /api/v1/analytics/response-times?period=...
 | YOLOv8x | mAP@0.5:0.95 | 53.9% | COCO val2017 |
 | ByteTrack | MOTA | 80.3% | MOT17 |
 | ByteTrack | IDF1 | 77.3% | MOT17 |
-| MCPT System | HOTA | 71.94% | AI City Challenge 2024 |
+| MCPT System | HOTA | 67.21% | AI City Challenge 2024 |
 | OSNet-AIN | Rank-1 | 94.8% | Market-1501 |
 | ResNet-50+SRU | Accuracy | 91.24% | UCF-Crime |
 
