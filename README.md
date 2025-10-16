@@ -122,6 +122,19 @@ Our system addresses these through:
 
 ## 🏗️ System Architecture
 
+### DEMO → PRODUCTION migration:
+
+```
+Current (Demo):          Future (Deployed):
+----------------         ------------------
+localhost:5000     →     https://api.tourism.gov.in
+SQLite database    →     PostgreSQL RDS
+3 Docker nodes     →     15 real servers across states
+ESP32 CAM feeds    →     Live CCTV streams
+Personal Computers →     Cloud infrastructure
+
+```
+
 ### High-Level Architecture
 
 ```
