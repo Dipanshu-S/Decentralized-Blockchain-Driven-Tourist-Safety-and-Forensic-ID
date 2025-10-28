@@ -1,0 +1,18 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# IDE configs
+.vscode/
+
+# Large / generated / temp files
+videos/
+*.mp4
+*.avi
+*.mkv
+*.log
+
+# OS / misc
+.DS_Store
+Thumbs.db

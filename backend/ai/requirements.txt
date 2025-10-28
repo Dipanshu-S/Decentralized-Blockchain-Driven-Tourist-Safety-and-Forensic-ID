@@ -1,0 +1,35 @@
+# Deep Learning Framework
+torch==2.4.1
+torchvision==0.19.1
+torchaudio==2.4.1
+
+# Computer Vision
+opencv-python==4.10.0.84
+opencv-contrib-python==4.10.0.84
+
+# YOLOv8 Detection
+ultralytics==8.3.26
+
+# Tracking Dependencies
+filterpy==1.4.5
+lap==0.5.12
+scipy==1.13.1
+
+# Utilities
+numpy==1.26.4
+Pillow==10.4.0
+matplotlib==3.9.2
+
+# Web Server
+Flask==3.0.3
+Flask-Cors==4.0.0
+Flask-SocketIO==5.4.1
+python-socketio==5.11.3
+eventlet==0.36.1
+
+# Logging
+loguru==0.7.2
+
+# Configuration
+python-dotenv==1.0.0
+PyYAML==6.0.2
