@@ -16,3 +16,4 @@ videos/
 # OS / misc
 .DS_Store
 Thumbs.db
+backend/ai/models/*.pt
