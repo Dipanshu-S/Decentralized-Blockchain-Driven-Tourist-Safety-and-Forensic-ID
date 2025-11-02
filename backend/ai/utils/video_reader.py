@@ -1,5 +1,5 @@
 """
-Video Reader - Supports Webcam, MP4, ESP32-CAM
+Video Reader - Supports Webcam, MP4, ESP32-CAM, Phone IP Camera
 """
 import cv2
 from loguru import logger
@@ -10,7 +10,7 @@ class VideoReader:
         Initialize video reader
         
         Args:
-            source: int (webcam), str (video file path), or URL (ESP32-CAM)
+            source: int (webcam), str (video file path, URL, or IP camera stream)
         """
         self.source = source
         self.cap = None
@@ -24,7 +24,18 @@ class VideoReader:
         """Open video source"""
         logger.info(f"Opening video source: {self.source}")
         
-        self.cap = cv2.VideoCapture(self.source)
+        # Handle different source types
+        if isinstance(self.source, str):
+            # Check if it's an IP camera stream
+            if self.source.startswith('http://') or self.source.startswith('rtsp://'):
+                # For IP cameras, use CAP_FFMPEG backend
+                self.cap = cv2.VideoCapture(self.source, cv2.CAP_FFMPEG)
+            else:
+                # Regular file
+                self.cap = cv2.VideoCapture(self.source)
+        else:
+            # Webcam index
+            self.cap = cv2.VideoCapture(self.source)
         
         if not self.cap.isOpened():
             raise ValueError(f"Cannot open video source: {self.source}")
@@ -33,6 +44,10 @@ class VideoReader:
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
         self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        
+        # For IP streams, FPS might be 0, set default
+        if self.fps == 0:
+            self.fps = 30.0
         
         logger.success(f"Video opened: {self.width}x{self.height} @ {self.fps} FPS")
     

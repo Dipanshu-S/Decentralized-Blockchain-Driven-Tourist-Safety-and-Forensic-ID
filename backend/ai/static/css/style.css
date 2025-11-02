@@ -425,3 +425,169 @@ body {
     color: #6b7280;
     box-shadow: 0 -2px 10px var(--shadow);
 }
+
+/* Camera Grid for Multiple Feeds */
+.camera-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.camera-container {
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 0.5rem;
+}
+
+.camera-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.camera-label {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.camera-status {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.camera-status.active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+@media (max-width: 768px) {
+    .camera-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dual Camera Control Grid */
+.camera-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.camera-control-section {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    background: var(--light);
+}
+
+.control-subtitle {
+    font-size: 1.1rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .camera-controls-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tab Navigation */
+.tab-navigation {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+    position: relative;
+    bottom: -2px;
+}
+
+.tab-btn:hover {
+    color: var(--primary);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+/* Camera Settings Sections */
+.camera-settings {
+    display: none;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.camera-settings.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-header h3 {
+    font-size: 1.1rem;
+    color: var(--dark);
+    margin: 0;
+}
+
+.status-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-badge.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge.active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+/* Remove old camera control grid styles if present */
+.camera-controls-grid {
+    display: none;
+}
+

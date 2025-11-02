@@ -9,7 +9,7 @@ import numpy as np
 from loguru import logger
 
 class PersonDetector:
-    def __init__(self, model_path='models/yolov8x.pt', conf_threshold=0.3):
+    def __init__(self, model_path='models/yolov8n.pt', conf_threshold=0.4, img_size=320):
         """
         Initialize YOLOv8 detector
         
@@ -17,16 +17,18 @@ class PersonDetector:
             model_path: Path to YOLOv8 weights
             conf_threshold: Minimum confidence score (0.0 to 1.0)
         """
-        logger.info("Initializing YOLOv8 Person Detector...")
+        logger.info("Initializing YOLOv8n (Nano) Person Detector for CPU...")
         
         self.model = YOLO(model_path)
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.device = 'cpu'  # Force CPU, previously it was "'cuda' if torch.cuda.is_available() else 'cpu'"
         self.conf_threshold = conf_threshold
+        self.img_size = img_size
         
         # COCO dataset class IDs
         self.PERSON_CLASS_ID = 0  # 'person' is class 0 in COCO
         
         logger.success(f"Model loaded on device: {self.device}")
+        logger.info(f"Input size: {self.img_size}x{self.img_size} (optimized for CPU)")
         logger.info(f"Confidence threshold: {self.conf_threshold}")
     
     def detect(self, frame):
@@ -46,8 +48,20 @@ class PersonDetector:
                 ...
             ]
         """
+         # Resize frame for faster processing
+        original_height, original_width = frame.shape[:2]
+        resized_frame = cv2.resize(frame, (self.img_size, self.img_size))
+
+        
         # Run inference
-        results = self.model(frame, verbose=False, device=self.device)
+        results = self.model(
+            resized_frame,
+            verbose=False,
+            device=self.device,
+            imgsz=self.img_size,
+            half=False,  # No half precision on CPU
+            conf=self.conf_threshold
+        )
         
         detections = []
         
@@ -65,9 +79,15 @@ class PersonDetector:
                     if conf >= self.conf_threshold:
                         # Get bounding box (xyxy format)
                         x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+
+                        # Scale coordinates back to original frame size
+                        x1 = int(x1 * original_width / self.img_size)
+                        y1 = int(y1 * original_height / self.img_size)
+                        x2 = int(x2 * original_width / self.img_size)
+                        y2 = int(y2 * original_height / self.img_size)
                         
                         detections.append({
-                            'bbox': [int(x1), int(y1), int(x2), int(y2)],
+                            'bbox': [x1, y1, x2, y2],
                             'confidence': round(float(conf), 3),
                             'class': 'person'
                         })
@@ -94,23 +114,11 @@ class PersonDetector:
             # Draw rectangle
             cv2.rectangle(frame, (x1, y1), (x2, y2), color, thickness)
             
-            # Draw label background
+            # Draw label
             label = f"Person {conf:.2f}"
-            (text_width, text_height), _ = cv2.getTextSize(
-                label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, thickness
-            )
-            cv2.rectangle(
-                frame, 
-                (x1, y1 - text_height - 10), 
-                (x1 + text_width, y1), 
-                color, 
-                -1
-            )
-            
-            # Draw label text
             cv2.putText(
-                frame, label, (x1, y1 - 5),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), thickness
+                frame, label, (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2
             )
         
         return frame
