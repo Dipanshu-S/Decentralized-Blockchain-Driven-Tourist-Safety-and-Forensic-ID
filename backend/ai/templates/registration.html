@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourist Registration - Smart Safety System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/registration.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <h1 class="nav-title">
+                <span class="icon">🛂</span>
+                Tourist Registration System
+                <span class="subtitle">Entry Point Registration</span>
+            </h1>
+            <div class="nav-actions">
+                <a href="/" class="btn-link">
+                    📹 Go to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Progress Indicator -->
+        <div class="progress-container card">
+            <div class="progress-steps">
+                <div class="step active" id="step1Indicator">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Personal Info</div>
+                </div>
+                <div class="step" id="step2Indicator">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Travel Details</div>
+                </div>
+                <div class="step" id="step3Indicator">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Visual Scan</div>
+                </div>
+                <div class="step" id="step4Indicator">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Confirmation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="registration-grid">
+            <!-- Form Section -->
+            <div class="form-section">
+                <!-- Step 1: Personal Information -->
+                <div class="form-step active" id="step1">
+                    <div class="card">
+                        <h2 class="card-title">📝 Personal Information</h2>
+                        
+                        <div class="form-group">
+                            <label for="touristType">Tourist Type <span class="required">*</span></label>
+                            <select id="touristType" class="input-select" onchange="toggleIdType()">
+                                <option value="">Select Type</option>
+                                <option value="indian">Indian (Bharatiya)</option>
+                                <option value="foreign">Foreign National</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name <span class="required">*</span></label>
+                                <input type="text" id="firstName" class="input-text" placeholder="Enter first name">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name <span class="required">*</span></label>
+                                <input type="text" id="lastName" class="input-text" placeholder="Enter last name">
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="aadhaarGroup" style="display: none;">
+                            <label for="aadhaar">Aadhaar Number <span class="required">*</span></label>
+                            <input type="text" id="aadhaar" class="input-text" 
+                                   placeholder="XXXX-XXXX-XXXX" maxlength="14"
+                                   oninput="formatAadhaar(this)">
+                            <small class="input-hint">12-digit Aadhaar number</small>
+                        </div>
+
+                        <div class="form-group" id="passportGroup" style="display: none;">
+                            <label for="passport">Passport Number <span class="required">*</span></label>
+                            <input type="text" id="passport" class="input-text" 
+                                   placeholder="Enter passport number">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email <span class="required">*</span></label>
+                                <input type="email" id="email" class="input-text" 
+                                       placeholder="tourist@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="phone" class="input-text" 
+                                       placeholder="+91 XXXXX-XXXXX">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" class="input-select">
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" id="age" class="input-text" 
+                                       placeholder="Age" min="1" max="120">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" onclick="nextStep(2)">
+                                Next: Travel Details →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Travel Details -->
+                <div class="form-step" id="step2">
+                    <div class="card">
+                        <h2 class="card-title">✈️ Travel Details</h2>
+                        
+                        <div class="form-group">
+                            <label for="entryPoint">Entry Point <span class="required">*</span></label>
+                            <select id="entryPoint" class="input-select">
+                                <option value="">Select Entry Point</option>
+                                <option value="airport_delhi">Indira Gandhi Airport, Delhi</option>
+                                <option value="airport_mumbai">Chhatrapati Shivaji Airport, Mumbai</option>
+                                <option value="airport_bangalore">Kempegowda Airport, Bangalore</option>
+                                <option value="railway_delhi">New Delhi Railway Station</option>
+                                <option value="railway_mumbai">Mumbai Central Railway Station</option>
+                                <option value="tourism_office">Tourism Department Office</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="arrivalDate">Arrival Date <span class="required">*</span></label>
+                                <input type="date" id="arrivalDate" class="input-text">
+                            </div>
+                            <div class="form-group">
+                                <label for="departureDate">Departure Date</label>
+                                <input type="date" id="departureDate" class="input-text">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="destination">Primary Destination</label>
+                            <input type="text" id="destination" class="input-text" 
+                                   placeholder="e.g., Jaipur, Rajasthan">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="itinerary">Itinerary / Places to Visit</label>
+                            <textarea id="itinerary" class="input-textarea" rows="3"
+                                      placeholder="List places you plan to visit..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="accommodation">Accommodation Details</label>
+                            <input type="text" id="accommodation" class="input-text" 
+                                   placeholder="Hotel name and address">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emergencyContact">Emergency Contact Name</label>
+                            <input type="text" id="emergencyContact" class="input-text" 
+                                   placeholder="Contact person name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emergencyPhone">Emergency Contact Phone</label>
+                            <input type="tel" id="emergencyPhone" class="input-text" 
+                                   placeholder="+91 XXXXX-XXXXX">
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="prevStep(1)">
+                                ← Back
+                            </button>
+                            <button class="btn btn-primary" onclick="nextStep(3)">
+                                Next: Visual Scan →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Visual Scan -->
+                <div class="form-step" id="step3">
+                    <div class="card">
+                        <h2 class="card-title">📸 Biometric Visual Scan</h2>
+                        
+                        <div class="scan-info">
+                            <p>We need to capture your face from multiple angles for identification purposes.</p>
+                            <p class="info-note">
+                                <strong>Privacy Protected:</strong> Images are encrypted and stored securely. 
+                                Only visual features are extracted for tracking.
+                            </p>
+                        </div>
+
+                        <div class="camera-capture-section">
+                            <div class="capture-preview">
+                                <video id="captureVideo" autoplay playsinline></video>
+                                <canvas id="captureCanvas" style="display: none;"></canvas>
+                                
+                                <div id="captureOverlay" class="capture-overlay">
+                                    <div class="face-guide">
+                                        <div class="guide-circle"></div>
+                                        <p>Position your face within the circle</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="capture-controls">
+                                <button class="btn btn-success" onclick="startCamera()">
+                                    📷 Start Camera
+                                </button>
+                                <button class="btn btn-primary" onclick="capturePhoto()" id="captureBtn" disabled>
+                                    📸 Capture Photo
+                                </button>
+                            </div>
+
+                            <div class="capture-instructions">
+                                <h3>Capture Instructions:</h3>
+                                <ol>
+                                    <li>Click "Start Camera" to activate webcam</li>
+                                    <li>Position face within the guide circle</li>
+                                    <li>Capture 3 photos from different angles:
+                                        <ul>
+                                            <li>✓ Front view</li>
+                                            <li>✓ Slight left turn</li>
+                                            <li>✓ Slight right turn</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="captured-images" id="capturedImages">
+                            <h3>Captured Images (<span id="captureCount">0</span>/3)</h3>
+                            <div class="image-grid" id="imageGrid">
+                                <!-- Captured images will appear here -->
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="prevStep(2)">
+                                ← Back
+                            </button>
+                            <button class="btn btn-primary" onclick="processRegistration()" id="submitBtn" disabled>
+                                Submit Registration →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Confirmation -->
+                <div class="form-step" id="step4">
+                    <div class="card confirmation-card">
+                        <div class="success-icon">✅</div>
+                        <h2 class="card-title">Registration Successful!</h2>
+                        
+                        <div class="did-display">
+                            <h3>Your Digital Identity (DID)</h3>
+                            <div class="did-value" id="didValue">
+                                did:tourist:loading...
+                            </div>
+                            <div class="did-qr" id="didQR">
+                                <!-- QR code will be generated here -->
+                            </div>
+                        </div>
+
+                        <div class="credentials-info">
+                            <h3>🔐 Verifiable Credentials Issued</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">ID Hash:</span>
+                                    <span class="info-value" id="idHashValue">Generating...</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Issued By:</span>
+                                    <span class="info-value">Tourism Department of India</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Valid Until:</span>
+                                    <span class="info-value" id="validUntil">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Status:</span>
+                                    <span class="info-value status-active">● Active</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="next-steps">
+                            <h3>📋 Next Steps</h3>
+                            <ul>
+                                <li>Your DID is now registered on the blockchain</li>
+                                <li>You can now be tracked across cameras for safety</li>
+                                <li>Show this QR code at checkpoints if needed</li>
+                                <li>Your data is encrypted and privacy-protected</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-success" onclick="downloadCredentials()">
+                                📥 Download Credentials
+                            </button>
+                            <button class="btn btn-primary" onclick="window.location.href='/'">
+                                🏠 Go to Dashboard
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetForm()">
+                                ➕ Register Another Tourist
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Panel (Right Side) -->
+            <div class="info-panel">
+                <div class="card">
+                    <h3 class="panel-title">ℹ️ Registration Information</h3>
+                    <div class="info-content">
+                        <div class="info-section">
+                            <h4>Why Register?</h4>
+                            <p>Registration creates a tamper-proof digital identity (DID) that:</p>
+                            <ul>
+                                <li>Enables tracking for your safety</li>
+                                <li>Provides quick emergency response</li>
+                                <li>Gives verifiable credentials</li>
+                                <li>Works offline when needed</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-section">
+                            <h4>🔒 Privacy Protected</h4>
+                            <p>Your personal data is:</p>
+                            <ul>
+                                <li>Encrypted with AES-256</li>
+                                <li>Stored off-chain securely</li>
+                                <li>Only hash stored on blockchain</li>
+                                <li>Never shared without consent</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-section">
+                            <h4>📱 What You'll Get</h4>
+                            <ul>
+                                <li>Unique Digital Identity (DID)</li>
+                                <li>Verifiable QR Code</li>
+                                <li>Blockchain Certificate</li>
+                                <li>24/7 Safety Monitoring</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card stats-card">
+                    <h3 class="panel-title">📊 Today's Statistics</h3>
+                    <div class="stat-item">
+                        <div class="stat-number">127</div>
+                        <div class="stat-label">Tourists Registered</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">45</div>
+                        <div class="stat-label">Currently Active</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">82</div>
+                        <div class="stat-label">Safe Exits</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Smart Tourist Safety System | SIH 2025 | Powered by Blockchain & AI</p>
+    </footer>
+
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="{{ url_for('static', filename='js/registration.js') }}"></script>
+</body>
+</html>

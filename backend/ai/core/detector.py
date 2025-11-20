@@ -121,4 +121,56 @@ class PersonDetector:
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2
             )
         
+    
+    def draw_tracked_detections(self, frame, tracked_objects, color=(0, 255, 0), thickness=2):
+        """
+        Draw bounding boxes with tracking IDs
+        
+        Args:
+            frame: OpenCV image
+            tracked_objects: List of tracked object dicts with 'bbox', 'tracking_id', 'confidence'
+            color: BGR color tuple
+            thickness: Line thickness
+        
+        Returns:
+            Annotated frame
+        """
+        for obj in tracked_objects:
+            x1, y1, x2, y2 = obj['bbox']
+            tracking_id = obj['tracking_id']
+            conf = obj['confidence']
+            
+            # Draw rectangle
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, thickness)
+            
+            # Draw tracking ID label (larger and prominent)
+            label = f"ID #{tracking_id}"
+            label_conf = f"{conf:.2f}"
+            
+            # Background for ID
+            (text_width, text_height), _ = cv2.getTextSize(
+                label, cv2.FONT_HERSHEY_SIMPLEX, 0.8, 2
+            )
+            
+            cv2.rectangle(
+                frame,
+                (x1, y1 - text_height - 15),
+                (x1 + text_width + 10, y1),
+                (0, 255, 0),
+                -1
+            )
+            
+            # Draw ID text
+            cv2.putText(
+                frame, label, (x1 + 5, y1 - 8),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2
+            )
+            
+            # Draw confidence below
+            cv2.putText(
+                frame, label_conf, (x1, y2 + 20),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1
+            )
+        
         return frame
+

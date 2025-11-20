@@ -16,6 +16,9 @@
                 <span class="subtitle">Multi-Camera People Tracking</span>
             </h1>
             <div class="nav-status">
+                <a href="/register" class="btn btn-success" style="margin-right: 1rem; text-decoration: none;">
+                    ➕ Register Tourist
+                </a>
                 <span id="statusBadge" class="badge badge-stopped">● STOPPED</span>
             </div>
         </div>
@@ -110,6 +113,35 @@
                     <button class="btn btn-danger" onclick="stopCamera(2)">
                         <span class="btn-icon">⏹️</span> Stop Camera 2
                     </button>
+                </div>
+            </div>
+            <!-- Add this after the camera tabs section in Control Panel -->
+
+            <!-- Tourist Search Section -->
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e5e7eb;">
+                <h3 style="color: #1f2937; margin-bottom: 1rem;">🔍 Search Tourist</h3>
+                
+                <div class="form-group">
+                    <label for="searchDID">Digital Identity (DID)</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="searchDID" class="input-text" 
+                            placeholder="did:tourist:abc123" style="flex: 1;">
+                        <button class="btn btn-primary" onclick="searchTourist()">
+                            🔍 Search
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="searchResult" style="margin-top: 1rem; display: none;">
+                    <div style="background: #f9fafb; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #10b981; margin-bottom: 0.5rem;">Tourist Found ✅</h4>
+                        <div id="touristInfo" style="font-size: 0.9rem; color: #6b7280;">
+                            <!-- Tourist info will be displayed here -->
+                        </div>
+                        <button class="btn btn-primary" onclick="viewTrajectory()" style="margin-top: 1rem;">
+                            📍 View Trajectory
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

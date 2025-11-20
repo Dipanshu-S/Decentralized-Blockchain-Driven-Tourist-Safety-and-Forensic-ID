@@ -210,7 +210,7 @@ function updateDetectionsList(detections) {
     
     list.innerHTML = detections.map((det, idx) => `
         <div class="detection-item">
-            <strong>${det.camera} - Person ${idx + 1}</strong>
+            <strong>🎯 ${det.camera} - Tracking ID #${det.tracking_id || 'N/A'}</strong>
             <small>
                 Confidence: ${(det.confidence * 100).toFixed(1)}%<br>
                 BBox: [${det.bbox.join(', ')}]
@@ -242,4 +242,95 @@ function updateGlobalStatus() {
         badge.className = 'badge badge-stopped';
         systemStatus.textContent = 'Ready';
     }
+}
+
+// Search tourist by DID
+async function searchTourist() {
+    const did = document.getElementById('searchDID').value.trim();
+    
+    if (!did) {
+        alert('⚠️ Please enter a DID');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/search_tourist?did=${encodeURIComponent(did)}`);
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            displayTouristInfo(result.tourist);
+            document.getElementById('searchResult').style.display = 'block';
+        } else {
+            alert(`❌ Tourist not found: ${result.error || 'Unknown error'}`);
+            document.getElementById('searchResult').style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Search error:', error);
+        alert(`❌ Search failed: ${error.message}`);
+    }
+}
+
+// Display tourist information
+function displayTouristInfo(tourist) {
+    const infoDiv = document.getElementById('touristInfo');
+    
+    const statusColor = tourist.status === 'active' ? '#10b981' : '#6b7280';
+    
+    infoDiv.innerHTML = `
+        <p><strong>Name:</strong> ${tourist.name}</p>
+        <p><strong>DID:</strong> ${tourist.did}</p>
+        <p><strong>Nationality:</strong> ${tourist.nationality || 'N/A'}</p>
+        <p><strong>Entry Point:</strong> ${tourist.entry_point}</p>
+        <p><strong>Entry Time:</strong> ${new Date(tourist.entry_timestamp).toLocaleString()}</p>
+        <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: 600;">${tourist.status.toUpperCase()}</span></p>
+        <p><strong>Last Seen:</strong> ${tourist.last_seen_camera || 'Not tracked yet'}</p>
+    `;
+    
+    // Store DID for trajectory view
+    window.currentTouristDID = tourist.did;
+}
+
+// View tourist trajectory
+async function viewTrajectory() {
+    const did = window.currentTouristDID;
+    
+    if (!did) {
+        alert('⚠️ No tourist selected');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/get_tourist_trajectory?did=${encodeURIComponent(did)}`);
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            if (result.trajectory.length === 0) {
+                alert('ℹ️ No tracking data available yet for this tourist');
+            } else {
+                displayTrajectory(result.trajectory);
+            }
+        } else {
+            alert(`❌ Failed to fetch trajectory: ${result.error || 'Unknown error'}`);
+        }
+        
+    } catch (error) {
+        console.error('Trajectory fetch error:', error);
+        alert(`❌ Failed to fetch trajectory: ${error.message}`);
+    }
+}
+
+// Display trajectory (simple alert for now - will enhance later)
+function displayTrajectory(trajectory) {
+    let message = `📍 Tourist Trajectory (${trajectory.length} sessions):\n\n`;
+    
+    trajectory.forEach((session, idx) => {
+        message += `${idx + 1}. Camera ${session.camera_id}\n`;
+        message += `   Tracking ID: #${session.tracking_id}\n`;
+        message += `   Start: ${new Date(session.start_time).toLocaleString()}\n`;
+        message += `   Duration: ${session.duration || 'Active'}s\n`;
+        message += `   Detections: ${session.num_detections}\n\n`;
+    });
+    
+    alert(message);
 }
