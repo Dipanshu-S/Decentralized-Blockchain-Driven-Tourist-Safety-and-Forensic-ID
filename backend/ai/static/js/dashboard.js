@@ -4,6 +4,15 @@ let camera1Running = false;
 let camera2Running = false;
 let detectionUpdateInterval;
 
+socket.on("stats", (data) => {
+    console.log("Received stats:", data);
+    updateStats(data);
+});
+
+// NEW: store webcam streams
+let webcamStream1 = null;
+let webcamStream2 = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Dual Camera Dashboard loaded');
     fetchSystemStatus();
@@ -57,33 +66,98 @@ function handleSourceChange(camera) {
     }
 }
 
-socket.on('connect', () => {
-    console.log('✅ WebSocket connected');
-});
+// =============== NEW WEBCAM FUNCTIONS (REGISTER.JS STYLE) ================= //
 
-socket.on('stats', (data) => {
-    console.log('Stats received:', data);
-    updateStats(data);
-});
+async function startWebcam(cameraNum) {
+    try {
+        const constraints = {
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: "user"
+            }
+        };
 
-socket.on('disconnect', () => {
-    console.log('❌ WebSocket disconnected');
-});
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-// Start Camera
-// Update startCamera function - add badge update
+        if (cameraNum === 1) webcamStream1 = stream;
+        else webcamStream2 = stream;
+
+        const video = document.getElementById(`videoFeed${cameraNum}`);
+        video.srcObject = stream;
+
+        document.getElementById(`noVideoPlaceholder${cameraNum}`).style.display = "none";
+        document.getElementById(`camera${cameraNum}Status`).textContent = 'Active';
+        document.getElementById(`camera${cameraNum}Status`).classList.add('active');
+
+        const badge = document.getElementById(`camera${cameraNum}Badge`);
+        if (badge) {
+            badge.textContent = "● Active";
+            badge.classList.remove("inactive");
+            badge.classList.add("active");
+        }
+
+        if (cameraNum === 1) camera1Running = true;
+        else camera2Running = true;
+
+        updateGlobalStatus();
+        alert(`📷 Webcam for Camera ${cameraNum} started!`);
+
+    } catch (error) {
+        console.error('Webcam error:', error);
+        alert('❌ Webcam access failed. Check permissions.');
+    }
+}
+
+function stopWebcam(cameraNum) {
+    const stream = cameraNum === 1 ? webcamStream1 : webcamStream2;
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        if (cameraNum === 1) webcamStream1 = null;
+        else webcamStream2 = null;
+    }
+
+    const video = document.getElementById(`videoFeed${cameraNum}`);
+    video.srcObject = null;
+
+    document.getElementById(`noVideoPlaceholder${cameraNum}`).style.display = "flex";
+    document.getElementById(`camera${cameraNum}Status`).textContent = 'Inactive';
+    document.getElementById(`camera${cameraNum}Status`).classList.remove('active');
+
+    const badge = document.getElementById(`camera${cameraNum}Badge`);
+    if (badge) {
+        badge.textContent = "● Inactive";
+        badge.classList.remove("active");
+        badge.classList.add("inactive");
+    }
+
+    if (cameraNum === 1) camera1Running = false;
+    else camera2Running = false;
+
+    updateGlobalStatus();
+}
+
+// ========================== UPDATED startCamera ============================ //
+
 async function startCamera(cameraNum) {
     const source = document.getElementById(`videoSource${cameraNum}`).value;
+
+    // NEW: detect webcam mode
+    if (source === "webcam") {
+        return startWebcam(cameraNum);
+    }
+
+    // ORIGINAL CODE FOR VIDEO + ESP32
     const videoPath = document.getElementById(`videoPath${cameraNum}`)?.value || 'videos/sample.mp4';
     const esp32Url = document.getElementById(`esp32Url${cameraNum}`)?.value || '';
-    
+
     const payload = {
         camera: cameraNum,
         source_type: source,
         video_path: videoPath,
         esp32_url: esp32Url
     };
-    
+
     try {
         const response = await fetch('/api/start_camera', {
             method: 'POST',
@@ -99,16 +173,16 @@ async function startCamera(cameraNum) {
             if (cameraNum === 1) camera1Running = true;
             else camera2Running = true;
             
-            // Show video feed
             document.getElementById(`videoFeed${cameraNum}`).src = `/video_feed_${cameraNum}?t=` + Date.now();
             document.getElementById(`noVideoPlaceholder${cameraNum}`).style.display = 'none';
+
             if (document.getElementById(`recordingIndicator${cameraNum}`)) {
                 document.getElementById(`recordingIndicator${cameraNum}`).style.display = 'flex';
             }
+
             document.getElementById(`camera${cameraNum}Status`).textContent = 'Active';
             document.getElementById(`camera${cameraNum}Status`).classList.add('active');
             
-            // Update badge in control panel
             const badge = document.getElementById(`camera${cameraNum}Badge`);
             if (badge) {
                 badge.textContent = '● Active';
@@ -127,8 +201,19 @@ async function startCamera(cameraNum) {
     }
 }
 
-// Update stopCamera function - add badge update
+// ========================== UPDATED stopCamera ============================ //
+
 async function stopCamera(cameraNum) {
+    const source = document.getElementById(`videoSource${cameraNum}`).value;
+
+    // NEW: stop webcam without backend call
+    if (source === "webcam") {
+        stopWebcam(cameraNum);
+        alert(`⏹️ Webcam for Camera ${cameraNum} stopped`);
+        return;
+    }
+
+    // ORIGINAL CODE for video/mp4 and ESP32
     try {
         const response = await fetch('/api/stop_camera', {
             method: 'POST',
@@ -143,16 +228,16 @@ async function stopCamera(cameraNum) {
         if (cameraNum === 1) camera1Running = false;
         else camera2Running = false;
         
-        // Hide video feed
         document.getElementById(`videoFeed${cameraNum}`).src = '';
         document.getElementById(`noVideoPlaceholder${cameraNum}`).style.display = 'flex';
+
         if (document.getElementById(`recordingIndicator${cameraNum}`)) {
             document.getElementById(`recordingIndicator${cameraNum}`).style.display = 'none';
         }
+
         document.getElementById(`camera${cameraNum}Status`).textContent = 'Inactive';
         document.getElementById(`camera${cameraNum}Status`).classList.remove('active');
         
-        // Update badge in control panel
         const badge = document.getElementById(`camera${cameraNum}Badge`);
         if (badge) {
             badge.textContent = '● Inactive';
@@ -167,6 +252,7 @@ async function stopCamera(cameraNum) {
         alert(`❌ Failed to stop Camera ${cameraNum}: ` + error.message);
     }
 }
+
 
 async function fetchSystemStatus() {
     try {

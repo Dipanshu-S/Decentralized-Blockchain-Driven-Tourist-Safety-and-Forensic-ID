@@ -436,148 +436,119 @@ curl -X GET "http://localhost:5000/api/v1/mcpt/trajectory/did:tourist:abc123xyz?
 ## 📁 Project Structure (Subjected to changes as we progress in our project)
 
 ```
-smart-tourist-safety-system/
-├── backend/
-│   ├── api/
-│   │   ├── routes/
-│   │   │   ├── tourist.js          # Tourist registration & verification
-│   │   │   ├── incident.js         # Incident logging & retrieval
-│   │   │   ├── mcpt.js             # Tracking & trajectory queries
-│   │   │   └── admin.js            # Admin operations
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   │   ├── auth.js             # JWT authentication
-│   │   │   ├── blockchain.js       # Blockchain transaction middleware
-│   │   │   └── rateLimit.js        # API rate limiting
-│   │   └── services/
-│   │       ├── blockchain.js       # Hyperledger Fabric SDK wrapper
-│   │       ├── database.js         # PostgreSQL queries
-│   │       └── encryption.js       # AES-256 encryption utilities
-│   ├── database/
-│   │   ├── migrations/             # Database schema migrations
-│   │   └── seeds/                  # Test data seeds
-│   ├── config/
-│   │   ├── database.js
-│   │   ├── blockchain.js
-│   │   └── redis.js
-│   └── tests/
-│       ├── unit/
-│       └── integration/
-├── blockchain/
-│   ├── chaincode/
-│   │   └── tourist-safety/
-│   │       ├── lib/
-│   │       │   ├── tourist-contract.js
-│   │       │   ├── incident-contract.js
-│   │       │   └── mcpt-contract.js
-│   │       ├── index.js
-│   │       └── package.json
-│   ├── network/
-│   │   ├── organizations/
-│   │   │   ├── tourism-dept/
-│   │   │   ├── police/
-│   │   │   ├── airport/
-│   │   │   ├── hotel/
-│   │   │   └── health/
-│   │   ├── configtx/
-│   │   └── docker/
-│   └── scripts/
-│       ├── network.sh              # Start/stop blockchain network
-│       └── deployCC.sh             # Deploy chaincode
-├── edge-ai/
-│   ├── models/
-│   │   ├── yolov8x.pt              # Detection model
-│   │   ├── osnet_ain.pth           # Re-ID model
-│   │   ├── hrnet_w48.pth           # Pose estimation
-│   │   └── resnet50_sru.pth        # Anomaly detection
-│   ├── inference/
-│   │   ├── detector.py             # YOLOv8 wrapper
-│   │   ├── tracker.py              # ByteTrack implementation
-│   │   ├── reid.py                 # Re-ID feature extraction
-│   │   └── anomaly.py              # Anomaly detection
-│   ├── preprocessing/
-│   │   ├── video_reader.py
-│   │   └── augmentation.py
-│   ├── postprocessing/
-│   │   ├── nms.py
-│   │   └── clustering.py
-│   └── server.py                   # Flask API for inference
-├── frontend/
-│   ├── dashboard/
-│   │   ├── src/
-│   │   │   ├── components/
-│   │   │   │   ├── CameraGrid.jsx
-│   │   │   │   ├── IncidentList.jsx
-│   │   │   │   ├── TouristMap.jsx
-│   │   │   │   └── AlertPanel.jsx
-│   │   │   ├── pages/
-│   │   │   │   ├── Dashboard.jsx
-│   │   │   │   ├── Incidents.jsx
-│   │   │   │   ├── Analytics.jsx
-│   │   │   │   └── Settings.jsx
-│   │   │   ├── services/
-│   │   │   │   ├── api.js
-│   │   │   │   ├── websocket.js
-│   │   │   │   └── blockchain.js
-│   │   │   ├── store/
-│   │   │   │   └── redux/
-│   │   │   └── utils/
-│   │   └── public/
-│   └── mobile/
-│       ├── src/
-│       │   ├── screens/
-│       │   │   ├── HomeScreen.jsx
-│       │   │   ├── PanicButtonScreen.jsx
-│       │   │   ├── TrackingScreen.jsx
-│       │   │   └── ProfileScreen.jsx
-│       │   ├── components/
-│       │   ├── navigation/
-│       │   └── services/
-│       └── android/ & ios/
-├── database/
-│   ├── postgres/
-│   │   └── schemas/
-│   │       ├── tourists.sql
-│   │       ├── incidents.sql
-│   │       └── access_logs.sql
-│   └── mongodb/
-│       └── schemas/
-│           ├── mcpt_tracklets.js
-│           └── feature_bank.js
-├── scripts/
-│   ├── setup/
-│   │   ├── install_dependencies.sh
-│   │   └── configure_env.sh
-│   ├── data/
+Decentralized-Blockchain-Driven-Tourist-Safety-Forensic-ID
+├── README.md
+├── backend
+│   ├── ai
+│   │   ├── app.py
+│   │   ├── backend
+│   │   │   └── database
+│   │   │       └── sqlite
+│   │   ├── core
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.cpython-312.pyc
+│   │   │   │   ├── detector.cpython-312.pyc
+│   │   │   │   └── tracker.cpython-312.pyc
+│   │   │   ├── detector.py
+│   │   │   └── tracker.py
 │   │   ├── download_models.py
-│   │   └── prepare_datasets.py
-│   └── deployment/
-│       ├── deploy_edge.sh
-│       └── deploy_cloud.sh
-├── docs/
-│   ├── API.md                      # API documentation
-│   ├── BLOCKCHAIN.md               # Smart contract guide
-│   ├── DEPLOYMENT.md               # Deployment instructions
-│   └── ARCHITECTURE.md             # System architecture deep-dive
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-├── docker/
-│   ├── docker-compose.yml
-│   ├── Dockerfile.backend
-│   ├── Dockerfile.edge-ai
-│   └── Dockerfile.dashboard
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── deploy.yml
-├── requirements.txt                # Python dependencies
-├── package.json                    # Node.js dependencies
-├── .env.example                    # Environment variables template
-├── .gitignore
-├── LICENSE
-└── README.md
+│   │   ├── logs
+│   │   │   └── app.log
+│   │   ├── models
+│   │   │   ├── yolov8n.pt
+│   │   │   └── yolov8x.pt
+│   │   ├── requirements.txt
+│   │   ├── static
+│   │   │   ├── css
+│   │   │   │   └── style.css
+│   │   │   └── js
+│   │   │       ├── dashboard.js
+│   │   │       └── register.js
+│   │   ├── templates
+│   │   │   ├── index.html
+│   │   │   ├── register.html
+│   │   │   └── registration.html
+│   │   ├── utils
+│   │   │   ├── __init__.py
+│   │   │   ├── __pycache__
+│   │   │   │   ├── __init__.cpython-312.pyc
+│   │   │   │   └── video_reader.cpython-312.pyc
+│   │   │   └── video_reader.py
+│   │   ├── venv
+│   │   │   ├── bin
+│   │   │   │   ├── Activate.ps1
+│   │   │   │   ├── activate
+│   │   │   │   ├── activate.csh
+│   │   │   │   ├── activate.fish
+│   │   │   │   ├── convert-caffe2-to-onnx
+│   │   │   │   ├── convert-onnx-to-caffe2
+│   │   │   │   ├── cpuinfo
+│   │   │   │   ├── cygdb
+│   │   │   │   ├── cython
+│   │   │   │   ├── cythonize
+│   │   │   │   ├── dotenv
+│   │   │   │   ├── f2py
+│   │   │   │   ├── flask
+│   │   │   │   ├── fonttools
+│   │   │   │   ├── isympy
+│   │   │   │   ├── normalizer
+│   │   │   │   ├── pip
+│   │   │   │   ├── pip3
+│   │   │   │   ├── pip3.12
+│   │   │   │   ├── proton
+│   │   │   │   ├── proton-viewer
+│   │   │   │   ├── pyftmerge
+│   │   │   │   ├── pyftsubset
+│   │   │   │   ├── python -> python3
+│   │   │   │   ├── python3 -> /usr/bin/python3
+│   │   │   │   ├── python3.12 -> python3
+│   │   │   │   ├── torchrun
+│   │   │   │   ├── tqdm
+│   │   │   │   ├── ttx
+│   │   │   │   ├── ultralytics
+│   │   │   │   └── yolo
+│   │   │   ├── include
+│   │   │   │   ├── python3.12
+│   │   │   │   └── site
+│   │   │   ├── lib
+│   │   │   │   └── python3.12
+│   │   │   ├── lib64 -> lib
+│   │   │   ├── pyvenv.cfg
+│   │   │   └── share
+│   │   │       └── man
+│   │   └── videos
+│   │       ├── 31777-388997457_small.mp4:Zone.Identifier
+│   │       ├── sample.mp4
+│   │       ├── sample2.mp4
+│   │       ├── sample3.mp4
+│   │       └── sampleh.mp4:Zone.Identifier
+│   └── database
+│       ├── __pycache__
+│       │   ├── db_manager.cpython-312.pyc
+│       │   ├── mongo_manager.cpython-312.pyc
+│       │   └── utils.cpython-312.pyc
+│       ├── backend
+│       │   └── database
+│       │       └── sqlite
+│       ├── db_manager.py
+│       ├── init_db.py
+│       ├── migrations
+│       ├── mongo_manager.py
+│       ├── mongodb
+│       │   └── schemas
+│       │       ├── tourist_features.js
+│       │       └── tracking_sessions.js
+│       ├── sqlite
+│       │   ├── schema.sql
+│       │   └── tourist.db
+│       └── utils.py
+├── data
+│   └── samples
+├── logs
+└── videos
+    ├── 31777-388997457_small.mp4:Zone.Identifier
+    └── sample.mp4
 ```
 
 ---
